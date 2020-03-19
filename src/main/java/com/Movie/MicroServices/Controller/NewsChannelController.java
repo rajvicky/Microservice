@@ -2,12 +2,12 @@ package com.Movie.MicroServices.Controller;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -15,7 +15,9 @@ import org.springframework.web.client.RestTemplate;
 
 import com.Movie.MicroServices.Model.AllNewChannels;
 import com.Movie.MicroServices.Model.Article;
+import com.Movie.MicroServices.Model.LatestHeadLine;
 import com.Movie.MicroServices.Model.NewsChannel;
+import com.Movie.MicroServices.Model.NewsContents;
 import com.Movie.MicroServices.Model.TopHeadLine;
 
 @RestController
@@ -96,6 +98,14 @@ public class NewsChannelController {
 		return allTopHeadLineNews;
 	}
 	
-	
+	@GetMapping("/latestnew/{country}/{category}")
+	public List<NewsContents> GetLatestNewContent(@PathVariable String country,@PathVariable String category,
+			@RequestHeader(name="API-KEY") String apiKey){
+		String url="http://newsapi.org/v2/top-headlines?country="+country+"&category="+category+"&apiKey="+apiKey;
+		 System.out.println(url);
+		LatestHeadLine latestHeadLine=restTemplate.getForObject(url,LatestHeadLine.class );
+
+		return latestHeadLine.getArticles();
+	}
 
 }
